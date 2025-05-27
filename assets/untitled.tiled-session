@@ -1,0 +1,133 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "#Background": {
+            "scaleInDock": 1
+        },
+        "#Platform Blocks": {
+            "scaleInDock": 1
+        },
+        "#spritesheet_tiles": {
+            "scaleInEditor": 1
+        },
+        "FinalMap.tmj": {
+            "scale": 0.605,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 730.5785123966942,
+                "y": 221.48760330578511
+            }
+        },
+        "FinalMap.tmj#Animated Blocks": {
+            "scaleInDock": 1
+        },
+        "FinalMap.tmj#Background": {
+            "scaleInDock": 1
+        },
+        "FinalMap.tmj#Blocks": {
+            "scaleInDock": 1
+        },
+        "FinalMap.tmj#spritesheet_tiles": {
+            "scaleInDock": 0.3366
+        },
+        "Map 1 copy.tmx": {
+            "scale": 0.5003333333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 899.4003997335111,
+                "y": 89.94003997335108
+            }
+        },
+        "Map 1 copy.tmx#Animated Trial": {
+            "scaleInDock": 1
+        },
+        "Map 1 copy.tmx#Background": {
+            "scaleInDock": 1
+        },
+        "Map 1 copy.tmx#Platforms": {
+            "scaleInDock": 1
+        },
+        "Map 1.tmx": {
+            "scale": 1.1936,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 501.0053619302949,
+                "y": 85.45576407506701
+            }
+        },
+        "Map 1.tmx#Animated Trial": {
+            "scaleInDock": 1.5247
+        },
+        "Map 1.tmx#Background": {
+            "scaleInDock": 1
+        },
+        "Map 1.tmx#Platforms": {
+            "scaleInDock": 1
+        },
+        "Map 2.tmj.tmx": {
+            "scale": 0.5003333333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 899.4003997335111,
+                "y": 89.94003997335108
+            }
+        },
+        "Map 2.tmj.tmx#Animated Trial": {
+            "scaleInDock": 1
+        },
+        "Map 2.tmj.tmx#Background": {
+            "scaleInDock": 1
+        },
+        "Map 2.tmj.tmx#Platforms": {
+            "scaleInDock": 1
+        },
+        "Map 2.tmx": {
+            "scale": 0.5003333333333333,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 711.5256495669553,
+                "y": 229.84676882078622
+            }
+        },
+        "Map 2.tmx#Animated Trial": {
+            "scaleInDock": 1
+        },
+        "Map 2.tmx#Background": {
+            "scaleInDock": 1
+        },
+        "Map 2.tmx#Platforms": {
+            "scaleInDock": 1
+        }
+    },
+    "frame.defaultDuration": 350,
+    "last.imagePath": "/Users/yuvalschwarzbord/Desktop/Platformer 2",
+    "map.height": 20,
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 18,
+    "map.tileWidth": 18,
+    "map.width": 100,
+    "openFiles": [
+    ],
+    "project": "untitled.tiled-project",
+    "recentFiles": [
+        "Map 2.tmx",
+        "Map 1 copy.tmx",
+        "Map 1.tmx"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 18,
+        "width": 18
+    }
+}
