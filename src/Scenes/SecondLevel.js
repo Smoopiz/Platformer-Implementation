@@ -31,6 +31,7 @@ class SecondLevel extends Phaser.Scene {
         this.sfxCoin = this.sound.add('sfx_coin');
         this.sfxJump = this.sound.add('sfx_jump');
         this.lastWalkTime = 0;
+        this.canDoubleJump = false;
 
         // Init Layers
         const background = this.map.addTilesetImage("Background", "large_background_tiles");
@@ -41,7 +42,8 @@ class SecondLevel extends Phaser.Scene {
         // Create Layers
         this.backgroundLayer = this.map.createLayer("Background", background, 0, 0);
         this.walkableLayer = this.map.createLayer("Walkable Blocks", animatedBlocks, 0, 0);
-        this.walkableLayer.setCollisionByProperty({ collides: true });
+        this.walkableLayer.setCollisionByProperty({collides: true});
+        this.walkableLayer.setCollisionByProperty({doubleJump: true});
         this.decorLayer = this.map.createLayer("Decor", animatedBlocks, extraDecorBlocks, extraStone, 0, 0);
         // In charge of the "death" layer, water and spikes are both in this layer, changing the name breaks the code.
         this.waterLayer = this.map.createLayer("Water Layer", animatedBlocks, 0, 0);
@@ -223,10 +225,8 @@ class SecondLevel extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
 
         // Horizontal movement particles
-
-        // MODIFY: Fix so the particles are under the player and not left behind 
         this.walkParticles = this.add.particles(0, 0, "kenny-particles", {
-            frame: ['muzzle_05.png'],
+            frame: "muzzle_05.png",
             scale: { start: 0.1, end: 0 },
             lifespan: 300,
             speedX: { min: -20, max: 20 },
@@ -238,6 +238,21 @@ class SecondLevel extends Phaser.Scene {
             frequency: 50
         });
         this.walkParticles.stop();
+
+        // Jump Particles
+        this.jumpParticles = this.add.particles(0, 0, "kenny-particles", {
+            frame: "smoke_02",
+            scale: { start: 0.1, end: 0 },
+            lifespan: 300,
+            speedX: { min: -20, max: 20 },
+            speedY: { min: -10, max: 10 },
+            alpha: { start: 0.8, end: 0 },
+            follow: this.player,
+            followOffset: { x: 0, y: 10 },
+            quantity: 1,
+            frequency: 50
+        });
+        this.jumpParticles.stop();
 
         // Coin pick up particles
         this.coinPickupParticles = this.add.particles(0, 0, "kenny-particles", {
@@ -507,6 +522,20 @@ class SecondLevel extends Phaser.Scene {
 
     update() {
         const onGround = this.player.body.blocked.down;
+
+        const tileLeft = this.walkableLayer.getTileAtWorldXY(
+            this.player.x - this.player.width / 2 - 1,
+            this.player.y,
+            true
+        );
+        const tileRight = this.walkableLayer.getTileAtWorldXY(
+            this.player.x + this.player.width / 2 + 1,
+            this.player.y,
+            true
+        );
+        if ((tileLeft && tileLeft.properties.doubleJump) || (tileRight && tileRight.properties.doubleJump)) {
+            this.canDoubleJump = true;
+        }             
     
         if (this.cursors.left.isDown) {
             this.player.setAccelerationX(-this.ACCELERATION);
@@ -548,9 +577,21 @@ class SecondLevel extends Phaser.Scene {
         }
     
         if (onGround && Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+            this.jumpParticles.start();
             this.sfxJump.play();
             this.player.setVelocityY(this.JUMP_VELOCITY);
-        }
+            this.time.delayedCall(400, () => {
+                this.jumpParticles.stop();
+            });
+        } else if (!onGround && Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.canDoubleJump) {
+            this.jumpParticles.start();
+            this.sfxJump.play();
+            this.player.setVelocityY(this.JUMP_VELOCITY);
+            this.canDoubleJump = false;
+            this.time.delayedCall(400, () => {
+                this.jumpParticles.stop();
+            });
+        }        
     
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.restart();
