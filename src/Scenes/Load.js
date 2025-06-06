@@ -9,10 +9,14 @@ class Load extends Phaser.Scene {
         // Load shared tileset image
         this.load.image("background_tiles", "tilemap-backgrounds_packed.png");
         this.load.image("tilemap_tiles", "tilemap_packed.png");
+        this.load.image("large_background_tiles", "spritesheet-backgrounds-double.png");
+        this.load.image("stone_tiles", "stone_packed.png");
+        this.load.image("extra_tlies", "EXTRA_tilemap_packed.png");
         this.load.atlas("platformer_characters", "tilemap-characters-packed.png", "tilemap-characters-packed.json");
 
         // Load tilemap
         this.load.tilemapTiledJSON("FinalMap", "FinalMap.tmj");
+        this.load.tilemapTiledJSON("NextMap", "NextMap.tmj");
 
         this.load.audio('sfx_walk', 'footstep_grass_001.ogg');
         this.load.audio('sfx_powerup', 'impactPlate_light_004.ogg');
@@ -25,6 +29,18 @@ class Load extends Phaser.Scene {
             frameHeight: 18
         });
         this.load.spritesheet("background_sheet", "tilemap-backgrounds_packed.png", {
+            frameWidth: 18,
+            frameHeight: 18
+        });
+        this.load.spritesheet("large_background_tiles", "spritesheet-backgrounds-double.png", {
+            frameWidth: 18,
+            frameHeight: 18
+        });
+        this.load.spritesheet("stone_tiles", "stone_packed.png", {
+            frameWidth: 18,
+            frameHeight: 18
+        });
+        this.load.spritesheet("extra_tlies", "EXTRA_tilemap_packed.png", {
             frameWidth: 18,
             frameHeight: 18
         });

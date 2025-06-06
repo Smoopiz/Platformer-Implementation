@@ -720,7 +720,7 @@
                  "visible":true,
                  "width":18,
                  "x":1,
-                 "y":234
+                 "y":50
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1350,7 +1350,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -1424,19 +1423,6 @@
          "name":"Background",
          "spacing":0,
          "tilecount":40,
-         "tileheight":18,
-         "tilewidth":18
-        }, 
-        {
-         "columns":64,
-         "firstgid":401,
-         "image":"spritesheet_tiles.png",
-         "imageheight":1280,
-         "imagewidth":1152,
-         "margin":0,
-         "name":"spritesheet_tiles",
-         "spacing":0,
-         "tilecount":0,
          "tileheight":18,
          "tilewidth":18
         }],

@@ -2,9 +2,9 @@ var my = {
     deathCount: 0
 };
 
-class Platformer extends Phaser.Scene {
+class SecondLevel extends Phaser.Scene {
     constructor() {
-        super("platformerScene");
+        super("secondLevelScene")
     }
 
     init() {
@@ -20,9 +20,8 @@ class Platformer extends Phaser.Scene {
 
     create() {
         // Create Map
-        this.map = this.add.tilemap("FinalMap", 18, 18);
+        this.map = this.add.tilemap("NextMap", 18, 18);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.hasPowerUp = false;
 
         // Load Audio
         this.sfxWalk = this.sound.add('sfx_walk');
@@ -32,49 +31,38 @@ class Platformer extends Phaser.Scene {
         this.sfxCoin = this.sound.add('sfx_coin');
         this.lastWalkTime = 0;
 
-        // Add Layers
-        const background = this.map.addTilesetImage("Background", "background_tiles")
+        // Init Layers
+        const background = this.map.addTilesetImage("Background", "large_background_tiles");
         const animatedBlocks = this.map.addTilesetImage("Animated Blocks", "tilemap_tiles");
+        const extraDecorBlocks = this.map.addTilesetImage("Extra Blocks", "extra_tlies");
+        const extraStone = this.map.addTilesetImage("Extra Stone", "stone_tiles");
+
+        // Create Layers
         this.backgroundLayer = this.map.createLayer("Background", background, 0, 0);
         this.walkableLayer = this.map.createLayer("Walkable Blocks", animatedBlocks, 0, 0);
         this.walkableLayer.setCollisionByProperty({ collides: true });
-        this.decorLayer = this.map.createLayer("Decor", animatedBlocks, 0, 0);
-        // In charge of all "death" related actions, renaming it breaks the code
+        this.decorLayer = this.map.createLayer("Decor", animatedBlocks, extraDecorBlocks, extraStone, 0, 0);
+        // In charge of the "death" layer, water and spikes are both in this layer, changing the name breaks the code.
         this.waterLayer = this.map.createLayer("Water Layer", animatedBlocks, 0, 0);
         this.waterLayer.setCollisionByExclusion([-1]);
         this.secondLayer = this.map.createLayer("Second Layer", animatedBlocks, 0, 0);
         this.secondLayer.setCollisionByProperty({ collides: true });
 
+        this.enemyOneGroup = this.physics.add.group();
+        this.enemyTwoGroup = this.physics.add.group();
+
+        // Start of loading objects
+
         // Diamond
         const diamonds = this.map.createFromObjects("Secret", {
             name: "Diamond",
-            key: "tilemap_sheet",
-            frame: 67
-        });
+            key: "tilemap_tiles",
+            frame: 27
+        }) ;
         this.physics.world.enable(diamonds, Phaser.Physics.Arcade.STATIC_BODY);
         this.diamondGroup = this.add.group(diamonds);
 
-        // Keys
-        const keys = this.map.createFromObjects("Key", {
-            name: "Key",
-            key: "tilemap_sheet",
-            frame: 27
-        });
-        this.physics.world.enable(keys, Phaser.Physics.Arcade.STATIC_BODY);
-        this.keyGroup = this.add.group(keys);
-
-        // Block
-        const block = this.map.createFromObjects("Block", {
-            name: "Block",
-            key: "tilemap_sheet",
-            frame: 28
-        });
-        this.physics.world.enable(block, Phaser.Physics.Arcade.STATIC_BODY);
-        this.blockGroup = this.add.group(block);
-
-        // Door
-
-        // MODIFY: Send to SecondLevel instead of ending
+        // Door (Was a "Door" block before change)
         const doors = this.map.createFromObjects("Game End", {
             name: "Door",
             key: "tilemap_sheet",
@@ -82,12 +70,14 @@ class Platformer extends Phaser.Scene {
         });
         this.physics.world.enable(doors, Phaser.Physics.Arcade.STATIC_BODY);
         this.doorGroup = this.add.group(doors);
-        this.anims.create({
-            key: "ending",
-            frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 148, end: 149 }),
-            frameRate: 4,
-            repeat: -1
-        });
+        if (!this.anims.exists('ending')) {
+            this.anims.create({
+                key: "ending",
+                frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 148, end: 149 }),
+                frameRate: 4,
+                repeat: -1
+            });
+        }
 
         // Power Ups
         const powerUps = this.map.createFromObjects("Power Up", {
@@ -97,14 +87,16 @@ class Platformer extends Phaser.Scene {
         });
         this.physics.world.enable(powerUps, Phaser.Physics.Arcade.DYNAMIC_BODY);
         this.powerUpGroup = this.add.group(powerUps);
-        this.anims.create({
-            key: "powerPulse",
-            frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 128, end: 129 }),
-            frameRate: 4,
-            repeat: -1
-        });
+        if (!this.anims.exists('powerPulse')) {
+            this.anims.create({
+                key: "powerPulse",
+                frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 128, end: 129 }),
+                frameRate: 4,
+                repeat: -1
+            });
+        }
 
-        // Shirnk Power Up
+        // Shrink Power Up
         const getSmall = this.map.createFromObjects("Special Power Up", {
             name: "Get Small",
             key: "tilemap_sheet",
@@ -112,12 +104,14 @@ class Platformer extends Phaser.Scene {
         });
         this.physics.world.enable(getSmall, Phaser.Physics.Arcade.DYNAMIC_BODY);
         this.getSmallGroup = this.add.group(getSmall);
-        this.anims.create({
-            key: "shrinker",
-            frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 7, end: 8 }),
-            frameRate: 4,
-            repeat: -1
-        });
+        if (!this.anims.exists("shrinker")) {
+            this.anims.create({
+                key: "shrinker",
+                frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 7, end: 8 }),
+                frameRate: 4,
+                repeat: -1
+            });
+        }
 
         // Coins
         const coins = this.map.createFromObjects("Coin Layer", {
@@ -127,12 +121,14 @@ class Platformer extends Phaser.Scene {
         });
         this.physics.world.enable(coins, Phaser.Physics.Arcade.DYNAMIC_BODY);
         this.coinGroup = this.add.group(coins);
-        this.anims.create({
-            key: "coinSpin",
-            frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 151, end: 152 }),
-            frameRate: 6,
-            repeat: -1
-        });
+        if (!this.anims.exists("coinSpin")) {
+            this.anims.create({
+                key: "coinSpin",
+                frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 151, end: 152 }),
+                frameRate: 6,
+                repeat: -1
+            });
+        }
 
         // Spawn Point
         const spawns = this.map.createFromObjects("Spawn", {
@@ -142,15 +138,86 @@ class Platformer extends Phaser.Scene {
         });
         this.physics.world.enable(spawns, Phaser.Physics.Arcade.DYNAMIC_BODY);
         this.spawnGroup = this.add.group(spawns);
-        this.anims.create({
-            key: "spawnIdle",
-            frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 111, end: 112 }),
-            frameRate: 2,
-            repeat: -1
-        });
+        if (!this.anims.exists("spawnIdle")) {
+            this.anims.create({
+                key: "spawnIdle",
+                frames: this.anims.generateFrameNumbers("tilemap_sheet", { start: 111, end: 112 }),
+                frameRate: 2,
+                repeat: -1
+            });
+        }
+        
+        // Enemy one spawn
+        if (!this.anims.exists("enemyOneWalk")) {
+            this.anims.create({
+                key: 'enemyOneWalk',
+                frames: this.anims.generateFrameNumbers("platformer_characters", { 
+                    frames: ["tile_0018.png", "tile_0020.png"]
+                }),
+                frameRate: 6,
+                repeat: -1
+            });
+        }
+        const enemyOneLayer = this.map.getObjectLayer("Enemy One");
+        enemyOneLayer.objects.forEach(obj => {
+            if (obj.name === "Spawn Enemy") {
+                const enemy = this.enemyOneGroup.create(obj.x, obj.y, 'platformer_characters', 'tile_0018.png');
+                enemy.anims.play('enemyOneWalk');
+                enemy.setOrigin(0, 1);
 
-        // Player Setup
+                enemy.body.setCollideWorldBounds(true);
+                enemy.direction = 1;
+                enemy.setVelocityX(50);            
+            }
+        });
+        this.physics.world.enable(enemyOneLayer, Phaser.Physics.Arcade.DYNAMIC_BODY);
+
+        // Enemy two spawn
+        if (!this.anims.exists("enemyTwoWalk")) {
+            this.anims.create({
+                key: 'enemyTwoWalk',
+                frames: this.anims.generateFrameNumbers("platformer_characters", { 
+                    frames: ["tile_0024.png", "tile_0025.png", "tile_0026.png"]
+                }),
+                frameRate: 6,
+                repeat: -1
+            });
+        }
+        const enemyTwoLayer = this.map.getObjectLayer("Enemy Two");
+        enemyTwoLayer.objects.forEach(obj => {
+            if (obj.name === "Spawn Enemy") {
+                const enemy = this.enemyTwoGroup.create(obj.x, obj.y, 'platformer_characters', 'tile_0024.png');
+                enemy.setOrigin(0, 1);
+                enemy.body.allowGravity = false;
+                enemy.body.immovable = true;
+                enemy.setVelocityY(0);
+                enemy.anims.play("enemyTwoWalk")
+                enemy.activated = false;
+
+                enemy.body.setCollideWorldBounds(true);
+                enemy.direction = 1;
+                enemy.setVelocityX(50);  
+
+                enemy.floatTween = this.tweens.add({
+                    targets: enemy,
+                    y: enemy.y - 5,
+                    duration: 1000,
+                    ease: 'Sine.easeInOut',
+                    yoyo: true,
+                    repeat: -1
+                });                
+            }
+        });
+        this.physics.world.enable(enemyTwoLayer, Phaser.Physics.Arcade.DYNAMIC_BODY);
+
+        // Player Creation 
         const spawnPoint = this.map.findObject("Spawn", obj => obj.name === "Spawn");
+
+        if (!spawnPoint) {
+            console.error("ERROR: Spawn point not found in 'Spawn' object layer!");
+            return;
+        }
+
         this.player = this.physics.add.sprite(spawnPoint.x + 20, spawnPoint.y - 11, "platformer_characters", "tile_0000.png");
         this.player.setCollideWorldBounds(true);
 
@@ -171,7 +238,7 @@ class Platformer extends Phaser.Scene {
         });
         this.walkParticles.stop();
 
-        // Coin pick up Particles
+        // Coin pick up particles
         this.coinPickupParticles = this.add.particles(0, 0, "kenny-particles", {
             frame: "star_04.png",
             scale: { start: 0.2, end: 0 },
@@ -181,9 +248,9 @@ class Platformer extends Phaser.Scene {
             gravityY: -100,
             alpha: { start: 1, end: 0 },
         });
-        this.coinPickupParticles.stop();    
-        
-        // Key pick up Particles
+        this.coinPickupParticles.stop();   
+
+        // Key pick up particles
         this.keyPickupParticles = this.add.particles(0, 0, "kenny-particles", {
             frame: "trace_03.png",
             scale: { start: 0.3, end: 0 },
@@ -194,8 +261,8 @@ class Platformer extends Phaser.Scene {
             alpha: { start: 1, end: 0 },
         });
         this.keyPickupParticles.stop();
-        
-        // Diamond pick up Particles
+
+        // Diamond pick up particles
         this.diamondPickupParticles = this.add.particles(0, 0, "kenny-particles", {
             frame: "star_08.png",
             scale: { start: 0.25, end: 0 },
@@ -207,7 +274,7 @@ class Platformer extends Phaser.Scene {
         });
         this.diamondPickupParticles.stop();
 
-        // Power up pick up Particles
+        // Power up pick up particles
         this.powerUpParticles = this.add.particles(0, 0, "kenny-particles", {
             frame: "smoke_06.png",
             scale: { start: 0.3, end: 0 },
@@ -231,19 +298,23 @@ class Platformer extends Phaser.Scene {
         });
         this.specialPowerUpParticles.stop();  
 
-        // Player + collision layers
+        // Player collison layers
         this.physics.add.collider(this.player, this.walkableLayer);
         this.physics.add.collider(this.player, this.secondLayer);
         this.physics.add.collider(this.player, this.waterLayer);
+        this.physics.add.collider(this.player, this.spawnGroup);
+        this.physics.add.collider(this.player, this.enemyOneGroup, this.handleEnemyCollision, null, this);
+        this.physics.add.collider(this.player, this.enemyTwoGroup, this.handleEnemyCollision, null, this);
 
-        // Kills the player
+
+        // Death handler
         this.waterLayer.setTileIndexCallback(
             this.waterLayer.layer.data.flat().filter(t => t.index !== -1).map(t => t.index),
             () => {this.handleDeath();},
             this
         );
-        
-        // Player vs object collisions
+
+        // Player object collison 
         this.physics.add.overlap(this.player, this.coinGroup, (player, coin) => {
             this.coinPickupParticles.emitParticleAt(coin.x, coin.y);
             this.sfxCoin.play();
@@ -260,17 +331,8 @@ class Platformer extends Phaser.Scene {
             this.diamondCount++;
             this.updateHUD();
         });        
-        this.physics.add.overlap(this.player, this.keyGroup, (player, key) => {
-            this.keyPickupParticles.emitParticleAt(key.x, key.y);
-            this.sfxKey.play();
-
-            key.destroy();
-
-            this.blockGroup.getChildren().forEach(block => {this.blockGroup.clear(true, true);});            
-        });
         this.physics.add.overlap(this.player, this.doorGroup, () => {
-            // Send player to SecondLevel instead of gameEndScene
-            this.scene.start("secondLevelScene", {
+            this.scene.start("gameEndScene", {
                 coins: this.coinCount,
                 diamonds: this.diamondCount
             });
@@ -306,19 +368,20 @@ class Platformer extends Phaser.Scene {
         
         });
 
-        this.physics.add.collider(this.player, this.spawnGroup);
-        this.physics.add.collider(this.player, this.blockGroup);
-
-        // Objects + collision layers
+        // Objects collison layer
         this.physics.add.collider(this.coinGroup, this.walkableLayer);
         this.physics.add.collider(this.coinGroup, this.secondLayer);
         this.physics.add.collider(this.coinGroup, this.coinGroup);
-        this.physics.add.collider(this.keyGroup, this.walkableLayer);
         this.physics.add.collider(this.diamondGroup, this.secondLayer);
         this.physics.add.collider(this.powerUpGroup, this.walkableLayer);
         this.physics.add.collider(this.powerUpGroup, this.secondLayer);
         this.physics.add.collider(this.spawnGroup, this.walkableLayer);
         this.physics.add.collider(this.getSmallGroup, this.secondLayer);
+        this.physics.add.collider(this.enemyOneGroup, this.walkableLayer)
+        this.physics.add.collider(this.enemyTwoGroup, this.walkableLayer)
+        this.physics.add.collider(this.enemyOneGroup, this.secondLayer)
+        this.physics.add.collider(this.enemyTwoGroup, this.secondLayer)
+
 
         // Death Counter
         this.deathCount = my.deathCount || 0;
@@ -334,26 +397,41 @@ class Platformer extends Phaser.Scene {
 
             this.player.body.enable = false;
 
-            this.time.delayedCall(100, () => {
+            this.sound.stopAll();
+            this.walkCooldown = false;
+
+            this.time.delayedCall(250, () => {
                 this.scene.restart();
             });
         };
 
-        // Input
+        // Player Input
         this.cursors = this.input.keyboard.createCursorKeys();
         this.rKey = this.input.keyboard.addKey('R');
 
-        // Animated tiles
+        // Animated Tiles
         this.animatedTiles.init(this.map);
 
-        // Camera setup
+        // Camera Setup
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.setScroll(0, 0);
         this.cameras.main.startFollow(this.player, true, 0.25, 0.25);
         this.cameras.main.setZoom(1.75);
 
-        // Object animations
-        this.coinGroup.getChildren().forEach(obj => obj.anims.play("coinSpin"));
+        // Object Animation
+        this.coinGroup.getChildren().forEach(coin => {
+            coin.anims.play("coinSpin");
+            coin.body.allowGravity = false;
+
+            this.tweens.add({
+                targets: coin,
+                y: coin.y - 5,
+                duration: 800,
+                ease: 'Sine.easeInOut',
+                yoyo: true,
+                repeat: -1
+            });
+        });
         this.powerUpGroup.getChildren().forEach(obj => obj.anims.play("powerPulse"));
         this.spawnGroup.getChildren().forEach(obj => obj.anims.play("spawnIdle"));
         this.getSmallGroup.getChildren().forEach(obj => obj.anims.play("shrinker"));
@@ -362,13 +440,68 @@ class Platformer extends Phaser.Scene {
         // UI Elements
         this.coinCount = 0;
         this.diamondCount = 0;
-    
+
         // HUD
         this.updateHUD = () => {
             document.getElementById("coin-counter").textContent = `🪙 Coins: ${this.coinCount}`;
             document.getElementById("diamond-counter").textContent = `💎 Diamonds: ${this.diamondCount}`;
             document.getElementById("death-counter").textContent = `💀 Deaths: ${this.deathCount}`;
         };
+    }
+
+    updateEnemyOne() {
+        this.enemyOneGroup.getChildren().forEach(enemy => {
+            enemy.body.setCollideWorldBounds(true);
+
+            const direction = enemy.direction;
+            const nextX = enemy.x + direction * enemy.width / 2;
+            const nextY = enemy.y + enemy.height / 2 + 1;
+            const tileAhead = this.walkableLayer.getTileAtWorldXY(nextX, nextY);
+
+            if (!tileAhead || enemy.body.blocked.left || enemy.body.blocked.right) {
+                enemy.direction *= -1;
+                enemy.setVelocityX(50*enemy.direction);
+                enemy.setFlipX(enemy.direction > 0)
+            }
+        });
+    }
+
+    updateEnemyTwo() {
+        this.enemyTwoGroup.getChildren().forEach(enemy => {
+            const distance = Phaser.Math.Distance.Between(enemy.x, enemy.y, this.player.x, this.player.y);
+    
+            if (distance < 150 && !enemy.activated) {
+                enemy.activated = true;
+    
+                if (enemy.floatTween) {
+                    enemy.floatTween.stop();
+                }
+            }
+    
+            if (enemy.activated) {
+                const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.player.x, this.player.y);
+                const speed = 60;
+    
+                enemy.setVelocity(
+                    Math.cos(angle) * speed,
+                    Math.sin(angle) * speed
+                );
+            }
+        });
+    }
+    
+
+    handleEnemyCollision(player, enemy) {
+        const playerBottom = player.body.y + player.body.height;
+        const enemyTop = enemy.body.y;
+    
+        if (player.body.velocity.y > 0 && playerBottom <= enemyTop + 10) {
+            enemy.destroy();
+            player.setVelocityY(this.JUMP_VELOCITY / 1.5);
+            this.sfxEnemyHit?.play();
+        } else {
+            this.handleDeath();
+        }
     }
 
     update() {
@@ -382,7 +515,7 @@ class Platformer extends Phaser.Scene {
             if (onGround && !this.walkCooldown) {
                 this.sfxWalk.play();
                 this.walkCooldown = true;
-                this.time.delayedCall(250, () => {
+                this.time.delayedCall(300, () => {
                     this.walkCooldown = false;
                 });
             }
@@ -397,7 +530,7 @@ class Platformer extends Phaser.Scene {
             if (onGround && !this.walkCooldown) {
                 this.sfxWalk.play();
                 this.walkCooldown = true;
-                this.time.delayedCall(250, () => {
+                this.time.delayedCall(300, () => {
                     this.walkCooldown = false;
                 });
             }
@@ -422,7 +555,8 @@ class Platformer extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.restart();
         }
-    }
-    
 
+        this.updateEnemyOne();
+        this.updateEnemyTwo();
+    }
 }
