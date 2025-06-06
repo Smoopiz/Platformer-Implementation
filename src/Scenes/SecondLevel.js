@@ -419,6 +419,7 @@ class SecondLevel extends Phaser.Scene {
             this.walkCooldown = false;
 
             this.time.delayedCall(250, () => {
+                GameState.resetToCheckpoint();
                 this.scene.restart();
             });
         };
@@ -456,8 +457,9 @@ class SecondLevel extends Phaser.Scene {
         this.doorGroup.getChildren().forEach(obj => obj.anims.play("ending"));
 
         // UI Elements
-        this.coinCount = 0;
-        this.diamondCount = 0;
+        this.coinCount = GameState.coins;
+        this.diamondCount = GameState.diamonds;
+        GameState.saveCheckpoint();
 
         // HUD
         this.updateHUD = () => {

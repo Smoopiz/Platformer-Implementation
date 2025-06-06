@@ -268,10 +268,9 @@ class Platformer extends Phaser.Scene {
             this.blockGroup.getChildren().forEach(block => {this.blockGroup.clear(true, true);});            
         });
         this.physics.add.overlap(this.player, this.doorGroup, () => {
-            this.scene.start("secondLevelScene", {
-                coins: this.coinCount,
-                diamonds: this.diamondCount
-            });
+            GameState.setCoins(this.coinCount);
+            GameState.setDiamond(this.diamondCount);
+            this.scene.start("secondLevelScene")
         });
         this.physics.add.overlap(this.player, this.powerUpGroup, (player, powerUp) => {
             this.powerUpParticles.emitParticleAt(powerUp.x, powerUp.y);
