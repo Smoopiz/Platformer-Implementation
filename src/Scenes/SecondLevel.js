@@ -29,6 +29,7 @@ class SecondLevel extends Phaser.Scene {
         this.sfxDiamond = this.sound.add('sfx_diamond');
         this.sfxKey = this.sound.add('sfx_key');
         this.sfxCoin = this.sound.add('sfx_coin');
+        this.sfxJump = this.sound.add('sfx_jump');
         this.lastWalkTime = 0;
 
         // Init Layers
@@ -520,7 +521,6 @@ class SecondLevel extends Phaser.Scene {
                 });
             }
     
-            this.walkParticles.followOffset.x = 10;
             if (onGround) this.walkParticles.start();
         } else if (this.cursors.right.isDown) {
             this.player.setAccelerationX(this.ACCELERATION);
@@ -535,7 +535,6 @@ class SecondLevel extends Phaser.Scene {
                 });
             }
     
-            this.walkParticles.followOffset.x = -10;
             if (onGround) this.walkParticles.start();
         } else {
             this.player.setAccelerationX(0);
@@ -549,6 +548,7 @@ class SecondLevel extends Phaser.Scene {
         }
     
         if (onGround && Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+            this.sfxJump.play();
             this.player.setVelocityY(this.JUMP_VELOCITY);
         }
     

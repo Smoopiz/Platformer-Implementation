@@ -1584,18 +1584,6 @@
                  "width":18,
                  "x":2073.24353385644,
                  "y":245.849752978785
-                }, 
-                {
-                 "gid":8,
-                 "height":18,
-                 "id":114,
-                 "name":"Spawn Enemy",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":18,
-                 "x":1.8735048930772,
-                 "y":412.873038885725
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1604,7 +1592,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":115,
+ "nextobjectid":116,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
