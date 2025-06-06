@@ -24,6 +24,7 @@ class Load extends Phaser.Scene {
         this.load.audio('sfx_key', 'impactPunch_medium_004.ogg');
         this.load.audio('sfx_coin', 'impactTin_medium_001.ogg');
         this.load.audio('sfx_jump', 'impactBell_heavy_004.ogg');
+        this.load.audio('background_music', 'BGM1.mp3')
 
         this.load.spritesheet("tilemap_sheet", "tilemap_packed.png", {
             frameWidth: 18,

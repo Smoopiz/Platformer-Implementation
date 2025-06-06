@@ -74,7 +74,6 @@ class Platformer extends Phaser.Scene {
 
         // Door
 
-        // MODIFY: Send to SecondLevel instead of ending
         const doors = this.map.createFromObjects("Game End", {
             name: "Door",
             key: "tilemap_sheet",
@@ -269,7 +268,6 @@ class Platformer extends Phaser.Scene {
             this.blockGroup.getChildren().forEach(block => {this.blockGroup.clear(true, true);});            
         });
         this.physics.add.overlap(this.player, this.doorGroup, () => {
-            // Send player to SecondLevel instead of gameEndScene
             this.scene.start("secondLevelScene", {
                 coins: this.coinCount,
                 diamonds: this.diamondCount

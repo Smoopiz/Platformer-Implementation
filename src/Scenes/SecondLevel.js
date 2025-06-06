@@ -23,6 +23,11 @@ class SecondLevel extends Phaser.Scene {
         this.map = this.add.tilemap("NextMap", 18, 18);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
+        // sfxWalk has errors after getting restarted
+        if (this.sfxWalk && this.sfxWalk.isDestroyed === false) {
+            this.sfxWalk.destroy();
+        };
+
         // Load Audio
         this.sfxWalk = this.sound.add('sfx_walk');
         this.sfxPowerUp = this.sound.add('sfx_powerup');
@@ -30,6 +35,8 @@ class SecondLevel extends Phaser.Scene {
         this.sfxKey = this.sound.add('sfx_key');
         this.sfxCoin = this.sound.add('sfx_coin');
         this.sfxJump = this.sound.add('sfx_jump');
+
+        // Set ups
         this.lastWalkTime = 0;
         this.canDoubleJump = false;
 
@@ -413,7 +420,9 @@ class SecondLevel extends Phaser.Scene {
 
             this.player.body.enable = false;
 
-            this.sound.stopAll();
+ //           if (this.sfxWalk.isPlaying) {
+ //               this.sfxWalk.stop();
+ //           }            
             this.walkCooldown = false;
 
             this.time.delayedCall(250, () => {
