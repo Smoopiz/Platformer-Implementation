@@ -153,9 +153,9 @@ class Platformer extends Phaser.Scene {
         this.player = this.physics.add.sprite(spawnPoint.x + 20, spawnPoint.y - 11, "platformer_characters", "tile_0000.png");
         this.player.setCollideWorldBounds(true);
 
-        // Horizontal movement particles
+        GameTimer.start();
 
-        // MODIFY: Fix so the particles are under the player and not left behind 
+        // Horizontal movement particles
         this.walkParticles = this.add.particles(0, 0, "kenny-particles", {
             frame: ['muzzle_05.png'],
             scale: { start: 0.1, end: 0 },

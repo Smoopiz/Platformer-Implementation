@@ -6,7 +6,8 @@ class GameEnd extends Phaser.Scene {
     init(data) {
         this.coins = data.coins || 0;
         this.diamonds = data.diamonds || 0;
-    }
+        this.timeTaken = data.time || 0;
+        }
 
     create() {
         this.add.text(400, 200, "🏁 LEVEL COMPLETE!", {
@@ -24,6 +25,12 @@ class GameEnd extends Phaser.Scene {
             fill: "#99ffff"
         }).setOrigin(0.5);
 
+        const elapsed = GameTimer.getElapsed();
+        console.log("End Time:", this.time.now, "Elapsed:", (this.time.now - this.startTime) / 1000);
+        this.add.text(400, 360, `🕒 Time Taken: ${elapsed.toFixed(2)} seconds`, {
+            fontSize: "24px",
+            fill: "#ffffff"
+        }).setOrigin(0.5);       
         this.add.text(400, 400, "Press [R] to Restart", {
             fontSize: "20px",
             fill: "#cccccc"

@@ -222,14 +222,11 @@ class SecondLevel extends Phaser.Scene {
 
         // Player Creation 
         const spawnPoint = this.map.findObject("Spawn", obj => obj.name === "Spawn");
-
-        if (!spawnPoint) {
-            console.error("ERROR: Spawn point not found in 'Spawn' object layer!");
-            return;
-        }
-
         this.player = this.physics.add.sprite(spawnPoint.x + 20, spawnPoint.y - 11, "platformer_characters", "tile_0000.png");
         this.player.setCollideWorldBounds(true);
+
+        const elapsed = GameTimer.getElapsed(this.time.now);
+        console.log("Elapsed time:", elapsed);
 
         // Horizontal movement particles
         this.walkParticles = this.add.particles(0, 0, "kenny-particles", {
@@ -419,10 +416,6 @@ class SecondLevel extends Phaser.Scene {
             this.updateHUD();
 
             this.player.body.enable = false;
-
- //           if (this.sfxWalk.isPlaying) {
- //               this.sfxWalk.stop();
- //           }            
             this.walkCooldown = false;
 
             this.time.delayedCall(250, () => {
