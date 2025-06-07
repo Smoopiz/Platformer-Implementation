@@ -43,13 +43,21 @@ class GameEnd extends Phaser.Scene {
             fontSize: "20px",
             fill: "#cccccc"
         }).setOrigin(0.5);
+        this.add.text(400, 440, "Press [C] to See Credits", {
+            fontSize: "20px",
+            fill: "#cccccc"
+        }).setOrigin(0.5);
 
         this.rKey = this.input.keyboard.addKey('R');
+        this.cKey = this.input.keyboard.addKey('C');
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.start("gameStartScene");
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
+            this.scene.start("creditsScene");
         }
     }
 }
