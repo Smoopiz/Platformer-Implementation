@@ -1,6 +1,3 @@
-// debug with extreme prejudice
-"use strict"
-
 // game config
 let config = {
     parent: 'phaser-game',
@@ -11,7 +8,6 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
             gravity: {
                 x: 0,
                 y: 0
