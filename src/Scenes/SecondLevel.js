@@ -455,6 +455,17 @@ class SecondLevel extends Phaser.Scene {
         this.spawnGroup.getChildren().forEach(obj => obj.anims.play("spawnIdle"));
         this.getSmallGroup.getChildren().forEach(obj => obj.anims.play("shrinker"));
         this.doorGroup.getChildren().forEach(obj => obj.anims.play("ending"));
+        this.diamondGroup.getChildren().forEach(diamond => {
+            this.tweens.add ({
+                targets: diamond,
+                y: diamond.y - 5,
+                duration: 800,
+                ease: 'Sine.easeInOut',
+                yoyo: true,
+                repeat: -1
+            });
+        });
+
 
         // UI Elements
         this.coinCount = GameState.coins;

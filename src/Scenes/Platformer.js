@@ -30,6 +30,7 @@ class Platformer extends Phaser.Scene {
         this.sfxDiamond = this.sound.add('sfx_diamond');
         this.sfxKey = this.sound.add('sfx_key');
         this.sfxCoin = this.sound.add('sfx_coin');
+        this.sfxJump = this.sound.add('sfx_jump');
         this.lastWalkTime = 0;
 
         // Add Layers
@@ -169,6 +170,21 @@ class Platformer extends Phaser.Scene {
             frequency: 50
         });
         this.walkParticles.stop();
+
+        // Jump Particles
+        this.jumpParticles = this.add.particles(0, 0, "kenny-particles", {
+            frame: "smoke_02",
+            scale: { start: 0.1, end: 0 },
+            lifespan: 300,
+            speedX: { min: -20, max: 20 },
+            speedY: { min: -10, max: 10 },
+            alpha: { start: 0.8, end: 0 },
+            follow: this.player,
+            followOffset: { x: 0, y: 10 },
+            quantity: 1,
+            frequency: 50
+        });
+        this.jumpParticles.stop();
 
         // Coin pick up Particles
         this.coinPickupParticles = this.add.particles(0, 0, "kenny-particles", {
@@ -331,7 +347,8 @@ class Platformer extends Phaser.Scene {
 
             this.player.body.enable = false;
 
-            this.time.delayedCall(100, () => {
+            this.time.delayedCall(250, () => {
+                GameState.resetToCheckpoint();
                 this.scene.restart();
             });
         };
@@ -350,16 +367,38 @@ class Platformer extends Phaser.Scene {
         this.cameras.main.setZoom(1.75);
 
         // Object animations
-        this.coinGroup.getChildren().forEach(obj => obj.anims.play("coinSpin"));
+        this.coinGroup.getChildren().forEach(coin => {
+            coin.anims.play("coinSpin");
+            coin.body.allowGravity = false;
+            this.tweens.add({
+                targets: coin,
+                y: coin.y - 5,
+                duration: 800,
+                ease: 'Sine.easeInOut',
+                yoyo: true,
+                repeat: -1
+            });
+        });
         this.powerUpGroup.getChildren().forEach(obj => obj.anims.play("powerPulse"));
         this.spawnGroup.getChildren().forEach(obj => obj.anims.play("spawnIdle"));
         this.getSmallGroup.getChildren().forEach(obj => obj.anims.play("shrinker"));
         this.doorGroup.getChildren().forEach(obj => obj.anims.play("ending"));
+        this.diamondGroup.getChildren().forEach(diamond => {
+            this.tweens.add ({
+                targets: diamond,
+                y: diamond.y - 5,
+                duration: 800,
+                ease: 'Sine.easeInOut',
+                yoyo: true,
+                repeat: -1
+            });
+        });
 
         // UI Elements
-        this.coinCount = 0;
-        this.diamondCount = 0;
-    
+        this.coinCount = GameState.coins;
+        this.diamondCount = GameState.diamonds;
+        GameState.saveCheckpoint();
+            
         // HUD
         this.updateHUD = () => {
             document.getElementById("coin-counter").textContent = `🪙 Coins: ${this.coinCount}`;
@@ -379,7 +418,7 @@ class Platformer extends Phaser.Scene {
             if (onGround && !this.walkCooldown) {
                 this.sfxWalk.play();
                 this.walkCooldown = true;
-                this.time.delayedCall(250, () => {
+                this.time.delayedCall(300, () => {
                     this.walkCooldown = false;
                 });
             }
@@ -394,7 +433,7 @@ class Platformer extends Phaser.Scene {
             if (onGround && !this.walkCooldown) {
                 this.sfxWalk.play();
                 this.walkCooldown = true;
-                this.time.delayedCall(250, () => {
+                this.time.delayedCall(300, () => {
                     this.walkCooldown = false;
                 });
             }
@@ -413,7 +452,12 @@ class Platformer extends Phaser.Scene {
         }
     
         if (onGround && Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+            this.jumpParticles.start();
+            this.sfxJump.play();
             this.player.setVelocityY(this.JUMP_VELOCITY);
+            this.time.delayedCall(400, () => {
+                this.jumpParticles.stop();
+            });
         }
     
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {

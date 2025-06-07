@@ -605,18 +605,6 @@
                  "width":18,
                  "x":377.027366781622,
                  "y":35.6992991433975
-                }, 
-                {
-                 "gid":152,
-                 "height":18,
-                 "id":154,
-                 "name":"Coin",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":18,
-                 "x":18.3809523809524,
-                 "y":55.4285714285714
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -732,7 +720,7 @@
                  "visible":true,
                  "width":18,
                  "x":1,
-                 "y":50
+                 "y":234
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -862,6 +850,18 @@
                  "width":18,
                  "x":684.069306930693,
                  "y":90.210368227834
+                }, 
+                {
+                 "gid":68,
+                 "height":18,
+                 "id":155,
+                 "name":"Diamond",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18,
+                 "x":35.6428571428571,
+                 "y":234
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -870,7 +870,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":155,
+ "nextobjectid":156,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
