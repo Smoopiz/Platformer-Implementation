@@ -356,6 +356,7 @@ class Platformer extends Phaser.Scene {
         // Input
         this.cursors = this.input.keyboard.createCursorKeys();
         this.rKey = this.input.keyboard.addKey('R');
+        this.pKey = this.input.keyboard.addKey('P');
 
         // Animated tiles
         this.animatedTiles.init(this.map);
@@ -463,7 +464,9 @@ class Platformer extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.restart();
         }
-    }
-    
 
+        if (Phaser.Input.Keyboard.JustDown(this.pKey)) {
+            this.scene.start("secondLevelScene")
+        };
+    }
 }

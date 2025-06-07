@@ -7,10 +7,19 @@ class GameEnd extends Phaser.Scene {
         this.coins = data.coins || 0;
         this.diamonds = data.diamonds || 0;
         this.timeTaken = data.time || 0;
-        }
+    }
+
+    preload() {
+        this.load.setPath("./assets/");
+        this.load.image("end_bg", "end_bg.png");
+    }
 
     create() {
-        this.add.text(400, 200, "🏁 LEVEL COMPLETE!", {
+        this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "end_bg")
+            .setOrigin(0.5)
+            .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+
+        this.add.text(400, 200, "🏁 You Win!", {
             fontSize: "32px",
             fill: "#ffffff"
         }).setOrigin(0.5);
@@ -26,7 +35,6 @@ class GameEnd extends Phaser.Scene {
         }).setOrigin(0.5);
 
         const elapsed = GameTimer.getElapsed();
-        console.log("End Time:", this.time.now, "Elapsed:", (this.time.now - this.startTime) / 1000);
         this.add.text(400, 360, `🕒 Time Taken: ${elapsed.toFixed(2)} seconds`, {
             fontSize: "24px",
             fill: "#ffffff"

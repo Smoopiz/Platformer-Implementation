@@ -46,12 +46,18 @@ class SecondLevel extends Phaser.Scene {
         const extraDecorBlocks = this.map.addTilesetImage("Extra Blocks", "extra_tlies");
         const extraStone = this.map.addTilesetImage("Extra Stone", "stone_tiles");
 
+        const decorTilesets = [
+            animatedBlocks,
+            extraDecorBlocks,
+            extraStone
+        ];
+
         // Create Layers
         this.backgroundLayer = this.map.createLayer("Background", background, 0, 0);
         this.walkableLayer = this.map.createLayer("Walkable Blocks", animatedBlocks, 0, 0);
         this.walkableLayer.setCollisionByProperty({collides: true});
         this.walkableLayer.setCollisionByProperty({doubleJump: true});
-        this.decorLayer = this.map.createLayer("Decor", animatedBlocks, extraDecorBlocks, extraStone, 0, 0);
+        this.decorLayer = this.map.createLayer("Decor", [animatedBlocks, extraDecorBlocks, extraStone], 0, 0);
         // In charge of the "death" layer, water and spikes are both in this layer, changing the name breaks the code.
         this.waterLayer = this.map.createLayer("Water Layer", animatedBlocks, 0, 0);
         this.waterLayer.setCollisionByExclusion([-1]);
@@ -226,7 +232,6 @@ class SecondLevel extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
 
         const elapsed = GameTimer.getElapsed(this.time.now);
-        console.log("Elapsed time:", elapsed);
 
         // Horizontal movement particles
         this.walkParticles = this.add.particles(0, 0, "kenny-particles", {

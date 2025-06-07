@@ -13,17 +13,17 @@ class GameStart extends Phaser.Scene {
             .setOrigin(0.5)
             .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
 
-        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Platformer Adventure", {
+        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Welcome to Ascension", {
             fontFamily: "Arial",
             fontSize: "32px",
-            color: "#ffffff",
+            color: "#000000",
             align: "center"
         }).setOrigin(0.5);
 
         this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "Press SPACE to Start", {
             fontFamily: "Arial",
             fontSize: "24px",
-            color: "#ffffff",
+            color: "#000000",
             align: "center"
         }).setOrigin(0.5);
 
